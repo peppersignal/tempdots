@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+#clock_m: constantly stream the current time
+
+
+. panel_visuals
+while true; do
+    #TODO: eyecandy
+    printf "C%s\n" "$(date +%R)"
+    sleep $TIME_MODULE_UPDATE 
+done

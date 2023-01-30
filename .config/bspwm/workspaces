@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+
+#Workspaces assignment
+#custom: up to you
+#permonitor: assign $desktops/$monitors workspaces per monitor
+workspaces='custom'
+
+desktops=("I" "II" "III" "IV" "V" "VI" "VII" "VIII" "IX" "X")
+monitors=( $(xrandr -q | grep -o -P "[a-zA-Z0-9_-]*(?= connected)") )
+case $workspaces in
+	custom)
+		[[ "${#monitors[@]}" =~ 2 ]] && {
+			bspc monitor "${monitors[0]}" -d ${desktops[0]}
+			bspc monitor "${monitors[1]}" -d ${desktops[@]:1}
+		} || {
+			bspc monitor "${monitors[0]}" -d ${desktops[*]}
+		}
+		;;
+
+	permonitor)
+		deskPerMonitor=$(( ${#desktops[@]} / ${#monitors[@]} )) 
+		deskIndex=0
+		for m in ${monitors[@]}; do
+			workspaces=( "${desktops[@]:deskIndex:deskPerMonitor}" )
+			bspc monitor "$m" -d ${workspaces[*]}	
+			(( deskIndex += deskPerMonitor ))
+		done
+		;;
+
+	*)
+		bspc monitor "${monitor[0]}" -d ${desktops[*]}
+		;;
+esac

@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+#run: executes the main script and pipes its output to lemonbar
+
+trap 'trap - TERM; kill 0' INT TERM QUIT EXIT
+
+. panel_visuals
+
+
+#Is the panel already running?
+if [[ -n "$(xdo id -a "$PANEL_WMNAME")" ]]; then
+    printf "error: A lemonbar instance is currently running\n" >&2
+    exit 1
+fi
+
+#Create/reset FIFO
+[[ -e "$PANEL_FIFO" ]] && rm "$PANEL_FIFO"
+mkfifo "$PANEL_FIFO"
+
+#Output raw data to FIFO
+. modules/clock_m > "$PANEL_FIFO" &
+. modules/xtitle_m > "$PANEL_FIFO" &
+. modules/desktops_m > "$PANEL_FIFO" &
+. modules/ram_usage_m > "$PANEL_FIFO" &
+. modules/pulseaudio_m > "$PANEL_FIFO" &
+
+#main takes raw data from FIFO, formats it accordingly and then pipes the "bar string" to lemonbar
+. main < "$PANEL_FIFO" | lemonbar -B "$BG" -n "$PANEL_WMNAME" | sh &
+
+
+#From https://github.com/baskerville/bspwm/blob/master/examples/panel/panel#L21
+#Waits for lemonbar to display and places it above the root window
+wid=$(xdo id -m -a "$PANEL_WMNAME")
+xdo above -t "$(xdo id -N Bspwm -n root | sort | head -n 1)" "$wid"
+
+#Leave the script hanging so it can be signaled later on
+wait

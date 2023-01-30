@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+. panel_visuals
+free -h -s $RAM_MODULE_UPDATE | awk -v FG="%{F${ACTIVE_FG}}" '/Mem/ {printf "R%s%s\n", FG, $3; fflush()}'
+#TODO: Eyecandy (correct color, not ACTIVE_FG)
+

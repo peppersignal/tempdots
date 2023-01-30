@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+#desktops_m: Grabs bspc's reports, creating and printing one "bar string" per output
+
+
+. panel_visuals
+
+#Formats bspc reports for further processing
+clean_output() {
+    set line
+    while IFS=':' read -r -a items; do
+        [[ "$line" = "${items[*]}" ]] && continue #Filter out duplicated output
+        line="${items[*]}"
+
+        items="${items[*]}"
+        while [[ $items =~ (LT|LM|TT|TP|TF|T=|G)[[:space:]]? ]]; do
+            items=${items//$BASH_REMATCH/}
+        done
+        echo "${items#?}"
+    done < <(bspc subscribe)
+}
+
+
+#Prepares given input and outputs it in a screenrc-like format
+while read -r desktops; do
+    unset bar_string output 
+    set -- $desktops
+    while [[ $# > 0 ]]; do
+        item=$1
+        case $item in
+            [mM]*)
+                case $item in
+                    [m]*) focused= ;;
+                    [M]*) focused=1 ;;
+                esac
+                ;;
+
+            [FfOoUu]*) 
+                desk=${item#?}
+                case $item in
+                    [FO]*)
+                        if [[ "$focused" ]] ; then
+                            FG="$FOCUSED_FG"; UL="$FOCUSED_UL"
+                        else
+                            FG="$ACTIVE_FG"; UL="$BG"
+                        fi
+                        ;;
+
+                    [f]*) FG="$FREE_FG"; UL="$BG" ;;
+                    [o]*) FG="$OCCUPIED_FG"; UL="$BG" ;;
+                esac
+                bar_string="${bar_string}%{A:bspc desktop -f ${desk}:}%{F${FG}}%{U${UL}}%{+u} ${desk} %{F-}%{-u}%{A}"
+        esac
+        shift
+    done
+    #n_monitors=$(bspc query -M | wc -l) 
+    #temp=$((n_monitors - 1))
+    #printf -v mirror "%%%%{S%s}%%s" $(seq 0 $temp)  
+    #IFS=$'\t' args=( $(printf -v aux "%*s" "$n_monitors"; echo -e ${aux// /$bar_string\\t}) )
+    #printf "$mirror" "${args[@]}" #sorry iw as high
+
+    #This isn't supposed to be here, but rather on the main script, where it is way more suited for as to mirror the COMPLETE bar
+    #aux=0
+    #for m in $(bspc query -M); do
+    #    output="${output}%{S${aux}}${bar_string}"
+    #    ((aux += 1))
+    #done
+    echo "W${bar_string}"
+done < <(clean_output) 
+    
+
+

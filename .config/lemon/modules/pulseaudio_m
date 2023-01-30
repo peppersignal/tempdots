@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+#pulseaudio_m: Outputs volume data based on signals sent by sxhkd
+
+trap trigger USR1
+. panel_visuals
+
+
+get_volume() {
+    awk -F/ '/Volume/ {gsub(/ |%/, ""); sum=$2+$4; avg=int(sum/2); printf "V%%%s\n", avg}' <<< "$(pactl get-sink-volume @DEFAULT_SINK@)"
+}
+
+trigger(){
+    if [[ "$(pactl get-sink-mute @DEFAULT_SINK@)" =~ yes ]]; then
+        echo "Vmuted"
+    else
+        echo "$(get_volume)"
+    fi
+}
+
+get_volume
+
+#Hangs indefinitely
+read -u 2

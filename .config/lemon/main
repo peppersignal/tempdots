@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+
+. panel_visuals
+
+while read -r line; do
+    case $line in
+        W*) wm_module="${line#?}" ;;
+        C*) clock_module="${line#?}" ;;
+        X*) xtitle_module="${line#?}" ;; 
+        V*) volume_module="${line#?}" ;;
+        R*) ram_module="${line#?}" ;; 
+    esac 
+    bar_string="%{l}${wm_module}%{c}${xtitle_module}%{r}${volume_module} ${ram_module} ${clock_module} "
+    printf "%s\n" "$bar_string"
+done
+

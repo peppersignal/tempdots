@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+
+download(){
+    one=$1 
+    two=$2
+    local name=${two:+$one}
+    local link="${two:=$one}"
+    command="yt-dlp -x --audio-format mp3 --embed-metadata --embed-thumbnail ${name:+-o $name.%(ext)s} ${link}"
+    ($command)
+}
+
+${1:?need at least one argument}
+download $1 $2
+

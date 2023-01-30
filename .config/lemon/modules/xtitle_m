@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+#xtitle_m: Prints the focused window name
+
+
+#TODO: eyecandy
+. panel_visuals
+xtitle -sf "X%s\n"

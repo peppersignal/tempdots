@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+pulseaudio_pid="$(ps -eo args=,pid= | awk '!/awk|vim/ && /pulseaudio_m/ {print $3}')"
+kill -USR1 $pulseaudio_pid &> /dev/null

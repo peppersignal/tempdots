@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+
+#Double borders, requires chwb2 from wmutils/opt
+#stolen and modified from @TheRealKizu
+draw() { chwb2 -I $inner -O $bouter -i 6 -o 8 $* ; }
+{ bspc subscribe node_geometry node_focus ; } |
+    while read -r _; do
+        inner=$bfocused draw "$(bspc query -N -n .local.focused.\!fullscreen)"
+        inner=$bnormal draw "$(bspc query -N -n .\!focused.\!fullscreen)"
+    done

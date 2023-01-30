@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+
+#------BSPWM------#
+gaps=15
+padding=20
+
+bthickness=14
+bnormal='0x5a524c'
+bfocused='0x807974'
+bouter='0x45403d'
+#-----------------#
+
+
+#----AUTOSTART----#
+#sxhkd
+killall -q sxhkd; sxhkd &
+
+#chwb2
+killall bspc
+
+#lemonbar
+#.config/lemon/run.sh &
+
+#dunst
+#placeholder
+
+#picom
+#placeholder
+#-----------------#
+
+#workspaces
+. ~/.config/bspwm/workspaces
+
+bspc config border_width        $bthickness
+bspc config window_gap          $gaps
+
+bspc config presel_feedback false
+bspc config pointer_modifier mod1
+bspc config pointer_follos_focus  true
+bspc config focus_follows_pointer true
+bspc config pointer_follows_monitor true
+bspc config remove_disabled_monitors true
+
+for p in top right bottom left; do
+    bspc config ${p}_padding $padding 
+done
+
+#double borders
+. ~/.config/bspwm/doubleborders

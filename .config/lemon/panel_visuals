@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+#Fonts
+PANEL_FONT='-*-tamsyn-medium-r-normal-*-12-*-*-*-*-*-*-1'
+PANEL_FONT2='-wuncon-siji-medium-r-normal--10-100-75-75-c-80-iso10646-1'
+PANEL_FONT3='UW Ttyp0:style=Regular'
+
+#Colors
+FOCUSED_FG="#ff2600"
+ACTIVE_FG="#f78000"
+OCCUPIED_FG="#aba9a9"
+FREE_FG="#454545"
+
+BG="#212121"
+
+FOCUSED_UL="#ffffff"
+
+#Update every N seconds
+RAM_MODULE_UPDATE=5
+TIME_MODULE_UPDATE=60
+
+#Internal handling
+PANEL_WMNAME="lemonbar_panel"
+PANEL_FIFO="panel_fifo"
+export PANEL_WMNAME PANEL_FIFO

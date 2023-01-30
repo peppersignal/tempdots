@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+
+get_layout() {
+    echo -e $(setxkbmap -print | awk -F+ '/xkb_symbol/ {print $2}')
+}
+
+
+change_layout() {
+    case $1 in
+        latam) setxkbmap latam ;;
+        us) setxkbmap us ;;
+        *) change_layout $([[ $(get_layout) = 'us' ]] && echo 'latam' || echo 'us') ;;
+    esac
+}
+
+#change_layout() {
+#    setxkbmap $1 || [[ -z '$1' ]] && 
+#}
+
+change_layout $1
+[[ -z "$PS1" ]] && echo -e "Keyboard layout now set to $(get_layout)"

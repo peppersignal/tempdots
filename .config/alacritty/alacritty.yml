@@ -1,0 +1,12 @@
+#Alacritty config file
+
+
+window:
+  padding:
+    x: 7
+    y: 7
+
+cursor:
+  style:
+    shape: Beam
+    blinking: On
